@@ -60,7 +60,7 @@ def read_qr_code(image):
 def stitch_and_recognize_images(image_folder):
     total_qr_count = 0
     total_time = 0
-    successful_groups = 0
+    successful_groups = 0  # 统计成功拼接的组数
     image_groups = [os.listdir(image_folder)[i:i + 5] for i in range(0, len(os.listdir(image_folder)), 5)]
 
     for idx, group in enumerate(image_groups):
@@ -83,7 +83,8 @@ def stitch_and_recognize_images(image_folder):
             print(f"Cannot stitch images in group, error code = {status}")
             continue
 
-        successful_groups += 1
+        successful_groups += 1  # 拼接成功的组计数器自增
+
         endtime = time.time()
         elapsed_time = endtime - starttime
         total_time += elapsed_time
@@ -95,18 +96,18 @@ def stitch_and_recognize_images(image_folder):
         print(f"Group {idx + 1} processed. QR codes found: {qr_count}. Time taken: {elapsed_time} seconds")
 
         # Save stitched image
-        pano_filename = os.path.join(image_folder, f"pano_group_{idx + 1}.jpg")
-        cv.imwrite(pano_filename, pano)
-        print(f"Panorama image saved as {pano_filename}")
+       # pano_filename = os.path.join(image_folder, f"pano_group_{idx + 1}.jpg")
+      #  cv.imwrite(pano_filename, pano)
+      #  print(f"Panorama image saved as {pano_filename}")
 
     avg_time_per_group = total_time / len(image_groups) if image_groups else 0
     print(f"Total QR codes detected: {total_qr_count}")
     print(f"Average time per group: {avg_time_per_group} seconds")
-    print(f"Successfully stitched {successful_groups} groups of images.")
+    print(f"Successfully stitched {successful_groups} groups of images.")  # 输出拼接成功的组数
 
 
 def main():
-    image_folder = r"D:\QR Code\QR Code\dataset"
+    image_folder = r"D:\QR Code\dataset\F\T"
     if not os.path.exists(image_folder):
         print(f"Folder {image_folder} does not exist.")
         return

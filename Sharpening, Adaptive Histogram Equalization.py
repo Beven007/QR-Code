@@ -6,7 +6,7 @@ from dbr import *
 # 初始化 BarcodeReader
 reader = BarcodeReader()
 # 获取免费的试用许可证
-license_key = "DLS2eyJoYW5kc2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6InNlc3Npb25QYXNzd29yZCI6indTcGR6Vm05WDJrcEQ5YUoifQ=="
+license_key = "DLS2eyJoYW5kc2V5SGFuZHNkZUlqbzIwMDAwMS0xNjQ5ODI5NzkyNjM1Iiwib3JnYW5pemF0aW9uSURJZCI6InNlc3Npb25QYXNzd29yZCIsImlkIjoiVDM2c29UQVMyVG5uQk1SUjZaSy9Nb2c9PSJ9=="
 reader.init_license(license_key)
 
 
@@ -96,18 +96,18 @@ def stitch_and_recognize_images(image_folder):
         print(f"Group {idx + 1} processed. QR codes found: {qr_count}. Time taken: {elapsed_time} seconds")
 
         # 保存拼接图像
-        pano_filename = os.path.join(image_folder, f"pano_group_{idx + 1}.jpg")
-        cv.imwrite(pano_filename, pano)
-        print(f"Panorama image saved as {pano_filename}")
+      #  pano_filename = os.path.join(image_folder, f"pano_group_{idx + 1}.jpg")
+      #  cv.imwrite(pano_filename, pano)
+      #  print(f"Panorama image saved as {pano_filename}")
 
     avg_time_per_group = total_time / len(image_groups) if image_groups else 0
     print(f"Total QR codes detected: {total_qr_count}")
     print(f"Average time per group: {avg_time_per_group} seconds")
-    print(f"Successfully stitched {successful_groups} groups of images.")
+    print(f"Successfully stitched {successful_groups} groups of images.")  # 输出成功拼接的组数
 
 
 def main():
-    image_folder = r"D:\QR Code\QR Code\dataset"
+    image_folder = r"D:\QR Code\dataset\F\T"
     if not os.path.exists(image_folder):
         print(f"Folder {image_folder} does not exist.")
         return

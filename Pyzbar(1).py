@@ -179,7 +179,7 @@ class AppMainWindow(QMainWindow):
         QMetaObject.invokeMethod(self, "capture_and_process_loop", Qt.QueuedConnection)
 
     def onFileRecognize(self):
-        dataset_path = r'D:\QR Code\QR Code\dataset'
+        dataset_path = r"D:\QR Code\dataset\F\4(2B)"
         image_files = [f for f in os.listdir(dataset_path) if f.endswith(('.jpg', '.png', '.bmp'))]
         image_files.sort()  # 确保文件按顺序处理
 

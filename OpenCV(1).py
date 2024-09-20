@@ -6,12 +6,15 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import ImageTk, Image
 
+# 禁用 OpenCL 以避免 GPU 内存不足的问题
+cv.ocl.setUseOpenCL(False)
+
 def cv_imread(file_path):
     return cv.imdecode(np.fromfile(file_path, dtype=np.uint8), cv.IMREAD_COLOR)
 
 def stitch_images_auto():
     starttime_total = time.time()
-    dataset_folder = r"D:\QR Code\QR Code\dataset"
+    dataset_folder = r"D:\QR Code\dataset\F\4(2B)"
     files = sorted([os.path.join(dataset_folder, f) for f in os.listdir(dataset_folder) if f.endswith(('.png', '.jpg', '.jpeg'))])
     num_qr_codes = 0
     total_time = 0

@@ -3,8 +3,6 @@ import numpy as np
 import os
 import time
 from dbr import *
-import cv2
-cv2.ocl.setUseOpenCL(False)
 
 # 初始化 BarcodeReader
 reader = BarcodeReader()
@@ -12,8 +10,10 @@ reader = BarcodeReader()
 license_key = "DLS2eyJoYW5kc2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6InNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ=="
 reader.init_license(license_key)
 
+
 def cv_imread(file_path):
     return cv.imdecode(np.fromfile(file_path, dtype=np.uint8), cv.IMREAD_COLOR)
+
 
 def read_qr_code(image):
     qr_count = 0
@@ -23,6 +23,7 @@ def read_qr_code(image):
             print(f"QR码内容: {result.barcode_text}")
             print(f"QR码类型: {result.barcode_format_string}")
 
+            # Corrected attribute access
             points = result.localization_result.localization_points
             print(f"QR码位置: {points}")
 
@@ -37,51 +38,35 @@ def read_qr_code(image):
         print("未检测到QR码")
     return qr_count
 
+
 def stitch_and_recognize_images(image_folder):
     total_qr_count = 0
     total_time = 0
-    successful_stitches = 0  # 统计成功拼接的组数
+    successful_stitch_count = 0  # 新增计数器
     image_groups = [os.listdir(image_folder)[i:i + 5] for i in range(0, len(os.listdir(image_folder)), 5)]
 
     for idx, group in enumerate(image_groups):
         starttime = time.time()
         imgs = []
 
-        # 尝试加载该组的所有图像
         for img_name in group:
             img_path = os.path.join(image_folder, img_name)
             if os.path.isfile(img_path):
                 image = cv_imread(img_path)
-                if image is None:
-                    print(f"Warning: Image {img_path} could not be loaded and will be skipped.")
-                    continue  # 跳过无法加载的图像
-                # 检查图像是否为空或者尺寸无效
-                if image.shape[0] == 0 or image.shape[1] == 0:
-                    print(f"Warning: Image {img_path} has invalid dimensions and will be skipped.")
-                    continue
                 imgs.append(image)
-            else:
-                print(f"Warning: {img_path} is not a valid file and will be skipped.")
 
-        # 如果图像组中没有有效图像，跳过该组
         if len(imgs) == 0:
-            print(f"No valid images in group {idx + 1}, skipping.")
             continue
 
-        # 尝试拼接图像
-        try:
-            stitcher = cv.Stitcher.create()
-            (status, pano) = stitcher.stitch(imgs)
-        except cv2.error as e:
-            print(f"Error during stitching group {idx + 1}: {e}")
-            continue
+        stitcher = cv.Stitcher.create()
+        (status, pano) = stitcher.stitch(imgs)
 
         if status != cv.Stitcher_OK:
-            print(f"Cannot stitch images in group {idx + 1}, error code = {status}")
+            print(f"Cannot stitch images in group, error code = {status}")
             continue
 
-        # 如果拼接成功，增加成功计数
-        successful_stitches += 1
+        # 如果拼接成功，增加计数器
+        successful_stitch_count += 1
 
         endtime = time.time()
         elapsed_time = endtime - starttime
@@ -96,15 +81,19 @@ def stitch_and_recognize_images(image_folder):
     avg_time_per_group = total_time / len(image_groups) if image_groups else 0
     print(f"Total QR codes detected: {total_qr_count}")
     print(f"Average time per group: {avg_time_per_group} seconds")
-    print(f"Total successful stitches: {successful_stitches} out of {len(image_groups)}")
+
+    # 输出拼接成功的组数
+    print(f"Total groups stitched successfully: {successful_stitch_count}")
+
 
 def main():
-    image_folder = r"D:\QR Code\dataset\F\4(2B)"
+    image_folder = r"D:\QR Code\dataset\F\T"
     if not os.path.exists(image_folder):
         print(f"Folder {image_folder} does not exist.")
         return
 
     stitch_and_recognize_images(image_folder)
+
 
 if __name__ == "__main__":
     main()
